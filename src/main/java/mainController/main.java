@@ -1,13 +1,27 @@
 package mainController;
 
 import entity.MemoriaCache;
+import entity.RAM;
+
+import java.util.Random;
 
 public class main {
 
 
     public static void main(String[] args) {
 
-        MemoriaCache.tags tag = MemoriaCache.tags.Exclusivo;
+        RAM ram = new RAM();
+        Random rand = new Random();
+
+        for (int i = 0; i < 100; i++) {
+            int valorAleatorio = rand.nextInt(1000);
+            ram.setLinha(i, valorAleatorio);
+        }
+
+        System.out.println("Memória RAM:");
+        ram.printMemoria();
+
+        //MemoriaCache.tags tag = MemoriaCache.tags.Exclusivo;
         /*
 
         - Funcao para printar resultado levando em conta o hashMap contendo as receitas.
