@@ -3,6 +3,9 @@ package mainController;
 import entity.MemoriaCache;
 import entity.MemoriaCache.blocoCache;
 import entity.Processador;
+import entity.RAM;
+
+import java.util.Random;
 
 public class main {
 
@@ -23,12 +26,24 @@ public class main {
         int enderecoBloco1 = p1.confereDadoCache(idReceita);
         int enderecoBloco2 = p2.confereDadoCache(idReceita);
         if(enderecoBloco1 != 0 && enderecoBloco2 == 0){
-//            blocoRAM =
+//
+            System.out.println("ola");
         }
     }
 
 
     public static void main(String[] args) {
+
+        RAM ram = new RAM();
+        Random rand = new Random();
+
+        for (int i = 0; i < 100; i++) {
+            int valorAleatorio = rand.nextInt(1000);
+            ram.setLinha(i, valorAleatorio);
+        }
+
+        System.out.println("Memória RAM:");
+        ram.printMemoria();
 
         MemoriaCache.tags tag = MemoriaCache.tags.Exclusivo;
 
