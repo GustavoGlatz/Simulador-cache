@@ -13,8 +13,8 @@ public class main {
 
         blocoCache bloco = p.getBlocoCache(blocoEndereco);
         //Funçao que printa resultado
-            System.out.println(idReceita);
-            System.out.println(bloco.tag);
+        System.out.println(idReceita);
+        System.out.println(bloco.getTag());
 
         System.out.println(
                 "A leitura foi um readHit não foi preciso fazer uma busca na memoria RAM e nem mudar a tag" +
@@ -22,15 +22,48 @@ public class main {
         );
     }
 
-    public void readMiss(Processador p1, Processador p2, int idReceita){
+    public void readMiss(RAM ram, Processador p1, Processador p2, int idReceita){
         int enderecoBloco1 = p1.confereDadoCache(idReceita);
         int enderecoBloco2 = p2.confereDadoCache(idReceita);
-        if(enderecoBloco1 != 0 && enderecoBloco2 == 0){
-//
-            System.out.println("ola");
+
+        if(enderecoBloco1 == 0 && enderecoBloco2 == 0){
+            //Não está presente em nenhuma das duas outras caches
+            //ram.LinhaRAM blocoRam =
+            //p1.setBlocoCache(ram.g, MemoriaCache.tags.Exclusivo, )
+            //retornar bloco que contém o a receita procurada pelo usuário
+            System.out.println("A leitura foi um readMiss e não estava em nenhuma das outras caches, então foi" +
+                    "necessário um acesso à memoria principal e a tag do bloco da cache é exclusiva.");
+        }
+        else if (enderecoBloco1 == 0){
+            blocoCache blocoCachep2 = p2.getBlocoCache(enderecoBloco2);
+
+            if(blocoCachep2.getTag() == MemoriaCache.tags.Exclusivo){
+
+                blocoCachep2.setTag(MemoriaCache.tags.Compartilhado);
+                //Colocar bloco no processador1 por meio da funcao setBloco(bloco, bloco.tag).
+                //Chamar funcao para printar resultado e logs.
+
+            }
+            int[] bloco = blocoCachep2.getDados();
+            //processador2.writeBack(dadosBloco, indice)
+            blocoCachep2.setTag(MemoriaCache.tags.Compartilhado);
+            //Colocar bloco no processador1 por meio da funcao setBloco(bloco, bloco.tag).
+            //chamar funcao para printar resultado e log
+
+        }
+
+        else if (enderecoBloco2 == 0){
+            System.out.println("oi");
         }
     }
 
+    public void writeMiss(){
+
+    }
+
+    public void writeHit(){
+
+    }
 
     public static void main(String[] args) {
 

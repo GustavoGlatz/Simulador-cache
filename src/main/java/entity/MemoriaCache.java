@@ -18,13 +18,36 @@ public class MemoriaCache {
     }
 
     public static class blocoCache{
-        public int[] dados;
-        public tags tag;
-        public int indiceRAM;
+        private int[] dados;
+        private tags tag;
+        private int indiceRAM;
 
         blocoCache(int[] dados, tags tag,  int indiceRAM){
             this.dados = dados;
             this.tag = tags.Exclusivo;
+            this.indiceRAM = indiceRAM;
+        }
+
+        public int[] getDados() {
+            return dados;
+        }
+        public tags getTag() {
+            return tag;
+        }
+        public int getIndiceRAM() {
+            return indiceRAM;
+        }
+
+        public void setDados(int[] dados) {
+            this.dados = dados;
+        }
+
+        public void setTag(tags tag) {
+            this.tag = tag;
+        }
+
+        public void setIndiceRAM(int indiceRAM) {
+            this.indiceRAM = indiceRAM;
         }
     }
 
@@ -48,7 +71,7 @@ public class MemoriaCache {
             int enderecoAntigo = filaEndereco.remove();
             blocoCache blocoAntigo = cache.remove(enderecoAntigo);
             filaEndereco.add(enderecoAntigo);
-//            cache.put(enderecoAntigo, new blocoCache(bloco));
+            cache.put(enderecoAntigo, new blocoCache(bloco, tag, indiceRAM));
         }
 
 

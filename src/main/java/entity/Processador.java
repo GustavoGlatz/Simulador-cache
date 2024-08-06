@@ -1,5 +1,6 @@
 package entity;
 
+
 public class Processador {
 
     private final MemoriaCache memoriaCache;
@@ -23,13 +24,20 @@ public class Processador {
     }
 
     public int buscaReceitaNoBloco(MemoriaCache.blocoCache bloco, int idReceita){
-        for(int i = 0; i < bloco.dados.length; i++){
-            if(bloco.dados[i] == idReceita){
+        for(int i = 0; i < bloco.getDados().length; i++){
+            if(bloco.getDados()[i] == idReceita){
                 return i;
             }
         }
         return 0;
     }
 
+//    public void setBlocoCache( bloco, MemoriaCache.tags tag, int indiceRAM){
+
+//    }
+
+    public void redefinirTagBloc(int enderecoBloco, MemoriaCache.tags tag){
+
+    }
 }
 
