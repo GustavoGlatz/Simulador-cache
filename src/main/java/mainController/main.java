@@ -1,13 +1,41 @@
 package mainController;
 
 import entity.MemoriaCache;
+import entity.MemoriaCache.blocoCache;
+import entity.Processador;
 
 public class main {
+
+    public void readHit(Processador p, int blocoEndereco, int idReceita){
+
+        blocoCache bloco = p.getBlocoCache(blocoEndereco);
+        //Funçao que printa resultado
+            System.out.println(idReceita);
+            System.out.println(bloco.tag);
+
+        System.out.println(
+                "A leitura foi um readHit não foi preciso fazer uma busca na memoria RAM e nem mudar a tag" +
+                "do bloco da cache."
+        );
+    }
+
+    public void readMiss(Processador p1, Processador p2, int idReceita){
+        int enderecoBloco1 = p1.confereDadoCache(idReceita);
+        int enderecoBloco2 = p2.confereDadoCache(idReceita);
+        if(enderecoBloco1 != 0 && enderecoBloco2 == 0){
+//            blocoRAM =
+        }
+    }
 
 
     public static void main(String[] args) {
 
         MemoriaCache.tags tag = MemoriaCache.tags.Exclusivo;
+
+        Processador processador1 = new Processador(5);
+        Processador processador2 = new Processador(5);
+        Processador processador3 = new Processador(5);
+
         /*
 
         - Funcao para printar resultado levando em conta o hashMap contendo as receitas.
@@ -19,11 +47,11 @@ public class main {
 
         if l:
             print(Qual receita voce deseja ler? ) - return: int idReceita(dado)
-            int bloco = processador1.buscarReceita(int idReceita) - return: bloco da cache
+            int blocoEndereco = processador1.confereDadoCache(int idReceita) - return: endereco do bloco da cache
             if bloco != null:
                 ReadHit() -> {
-                    receita = processador1.cache.getBloco(bloco, idReceita)
-//                    print(receita)
+                    receita = processador1.cache.getBloco(blocoEndereco)
+//                  print(receita)
                 }
             else:
                 ReadMiss() -> {

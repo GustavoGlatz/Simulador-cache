@@ -13,15 +13,16 @@ public class MemoriaCache {
     }
 
 
-    public blocoCache getBlocoCache(int idReceita){
-        return cache.get(idReceita);
+    public blocoCache getBlocoCache(int blocoEndereco){
+        return cache.get(blocoEndereco);
     }
 
-    private class blocoCache{
-        int[] dados;
-         tags tag;
+    public static class blocoCache{
+        public int[] dados;
+        public tags tag;
+        public int indiceRAM;
 
-        blocoCache(int[] dados){
+        blocoCache(int[] dados, tags tag,  int indiceRAM){
             this.dados = dados;
             this.tag = tags.Exclusivo;
         }
@@ -34,12 +35,12 @@ public class MemoriaCache {
         random = new Random();
     }
 
-    public void setBloco(int[] bloco, tags tag) {
+    public void setBloco(int[] bloco, tags tag, int indiceRAM) {
         //Mapeamento aleatoriamente
         if (cache.size() < tamanhoCache) {
             int posicaoAleatoria = random.nextInt(tamanhoCache);
             filaEndereco.add(posicaoAleatoria);
-            cache.put(posicaoAleatoria, new blocoCache(bloco));
+            cache.put(posicaoAleatoria, new blocoCache(bloco, tags.Exclusivo, indiceRAM));
 
         }
         //Substituição FIFO
@@ -47,7 +48,7 @@ public class MemoriaCache {
             int enderecoAntigo = filaEndereco.remove();
             blocoCache blocoAntigo = cache.remove(enderecoAntigo);
             filaEndereco.add(enderecoAntigo);
-            cache.put(enderecoAntigo, new blocoCache(bloco));
+//            cache.put(enderecoAntigo, new blocoCache(bloco));
         }
 
 
