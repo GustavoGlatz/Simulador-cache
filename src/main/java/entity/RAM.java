@@ -3,36 +3,7 @@ import java.util.*;
 
 public class RAM {
 
-    private class LinhaRAM {
-        private int linha;
-        private int dado;
-
-        public LinhaRAM(int linha, int dado) {
-            this.linha = linha;
-            this.dado = dado;
-        }
-
-        public int getIndice() {
-            return linha;
-        }
-
-        public int getDado() {
-            return dado;
-        }
-
-        public void setDado(int dado) {
-            this.dado = dado;
-        }
-
-        public String toString() {
-            return "LinhaRAM{" +
-                    "linha=" + linha +
-                    ", dado=" + dado +
-                    '}';
-        }
-    }
-
-    private Map<Integer, LinhaRAM> ram;
+    private final Map<Integer, Integer> ram;
     private static final int TAMANHO_DO_BLOCO = 5;
 
     public RAM() {
@@ -40,31 +11,48 @@ public class RAM {
     }
 
     public void setLinha(int indice, int dado) {
-        ram.put(indice, new LinhaRAM(indice, dado));
+        ram.put(indice, dado);
     }
 
-    public LinhaRAM getLinha(int indice) {
-        return ram.get(indice);
+    public int getIndiceBloco(int dado) {
+        Integer indiceEncontrado = null;
+
+        for (Map.Entry<Integer, Integer> entry : ram.entrySet()) {
+            if (entry.getValue().equals(dado)) {
+                indiceEncontrado = entry.getKey();
+                break;
+            }
+        }
+        if (indiceEncontrado == null) {
+            return -1;
+        }
+
+        return (indiceEncontrado / TAMANHO_DO_BLOCO) * TAMANHO_DO_BLOCO;
     }
 
-    public LinhaRAM[] getBloco(int inicio) {
-        LinhaRAM[] bloco = new LinhaRAM[TAMANHO_DO_BLOCO];
+    public int[] getBloco(int dado){
+        int inicioBloco = getIndiceBloco(dado);
+        if(inicioBloco == -1){
+            return null;
+        }
+
+        int[] bloco = new int[TAMANHO_DO_BLOCO];
         for (int i = 0; i < TAMANHO_DO_BLOCO; i++) {
-            int linhaAtual = inicio + i;
+            int linhaAtual = inicioBloco + i;
             bloco[i] = ram.get(linhaAtual);
         }
         return bloco;
     }
 
-    public void updateBloco(LinhaRAM[] bloco) {
-        for (LinhaRAM linhaRAM : bloco) {
-            setLinha(linhaRAM.getIndice(), linhaRAM.getDado());
+    public void updateBloco(int[] bloco, int indice) {
+        for (int i = 0; i < TAMANHO_DO_BLOCO; i++) {
+            setLinha(indice + i, bloco[i]);
         }
     }
 
     public void printMemoria() {
-        for (Map.Entry<Integer, LinhaRAM> entry : ram.entrySet()) {
-            System.out.println(entry.getValue());
+        for (Map.Entry<Integer, Integer> entry : ram.entrySet()) {
+            System.out.println("Índice: " + entry.getKey() + ", " + entry.getValue());
         }
     }
 

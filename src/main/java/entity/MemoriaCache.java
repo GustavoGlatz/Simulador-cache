@@ -3,13 +3,13 @@ import java.util.*;
 
 public class MemoriaCache {
 
-    private final int tamanhoCache;
+    private static final int tamanhoCache = 5;
     private final Queue<Integer> filaEndereco;
-    private final Map<Integer, blocoCache> cache;
+    public final Map<Integer, blocoCache> cache;
     private final Random random;
 
     public enum tags{
-        Exclusivo, Modificado, Compartilhado, Invalido;
+        Exclusivo, Modificado, Compartilhado, Invalido
     }
 
 
@@ -24,7 +24,7 @@ public class MemoriaCache {
 
         blocoCache(int[] dados, tags tag,  int indiceRAM){
             this.dados = dados;
-            this.tag = tags.Exclusivo;
+            this.tag = tag;
             this.indiceRAM = indiceRAM;
         }
 
@@ -52,19 +52,25 @@ public class MemoriaCache {
     }
 
     public MemoriaCache(int tamanhoCache){
-        this.tamanhoCache = tamanhoCache;
         filaEndereco = new LinkedList<Integer>();
         cache = new HashMap<Integer, blocoCache>();
         random = new Random();
     }
 
     public void setBloco(int[] bloco, tags tag, int indiceRAM) {
-        //Mapeamento aleatoriamente
+        //Mapeamento aleatorio
         if (cache.size() < tamanhoCache) {
-            int posicaoAleatoria = random.nextInt(tamanhoCache);
-            filaEndereco.add(posicaoAleatoria);
-            cache.put(posicaoAleatoria, new blocoCache(bloco, tags.Exclusivo, indiceRAM));
-
+            List<Integer> posicoesVazias = new ArrayList<>();
+            for (int i = 0; i < tamanhoCache; i++) {
+                if (!cache.containsKey(i)) {
+                    posicoesVazias.add(i);
+                }
+            }
+            if (!posicoesVazias.isEmpty()) {
+                int posicaoAleatoria = posicoesVazias.get(random.nextInt(posicoesVazias.size()));
+                filaEndereco.add(posicaoAleatoria);
+                cache.put(posicaoAleatoria, new blocoCache(bloco, tags.Exclusivo, indiceRAM));
+            }
         }
         //Substituição FIFO
         else {
@@ -73,9 +79,32 @@ public class MemoriaCache {
             filaEndereco.add(enderecoAntigo);
             cache.put(enderecoAntigo, new blocoCache(bloco, tag, indiceRAM));
         }
-
-
     }
 
+    public void printCache() {
+        System.out.println("Conteúdo da Cache:");
+        for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
+            System.out.println("Posição: " + entry.getKey() + ", Dados: " + Arrays.toString(entry.getValue().dados) +
+                    ", TAG: (" + entry.getValue().tag + "," + entry.getValue().indiceRAM + ")");
+        }
+    }
+
+    public Integer procuraCache(int idReceita) {
+        for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
+            int[] dados = entry.getValue().dados;
+            for (int dado : dados) {
+                if (dado == idReceita) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
+    public void printPosicaoCache(int posicao) {
+        blocoCache bloco = cache.get(posicao);
+        System.out.println("Posição: " + posicao + ", Dados: " + Arrays.toString(bloco.dados) +
+                ", TAG: (" + bloco.tag + "," + bloco.indiceRAM + ")");
+    }
 
 }

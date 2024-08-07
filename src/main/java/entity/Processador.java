@@ -1,6 +1,8 @@
 package entity;
 
 
+import java.util.Map;
+
 public class Processador {
 
     private final MemoriaCache memoriaCache;
@@ -14,9 +16,17 @@ public class Processador {
         return null;
     }
 
-    // Busca na memória cacahe e retorna o endereco da linha da cache que contém o bloco da receita
-    public int confereDadoCache(int idReceita){
-        return 0;
+    // Busca na memória cache e retorna o endereco da linha da cache que contém o bloco da receita
+    public Integer confereDadoCache(int idReceita){
+        for (Map.Entry<Integer, MemoriaCache.blocoCache> entry : memoriaCache.cache.entrySet()) {
+            int[] dados = entry.getValue().getDados();
+            for (int dado : dados) {
+                if (dado == idReceita) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
     }
 
     public MemoriaCache.blocoCache getBlocoCache(int blocoEndereco){
@@ -36,8 +46,25 @@ public class Processador {
 
 //    }
 
+    public void setBlocoCache(int[] bloco, MemoriaCache.tags tag, int indiceBloco){
+        if(bloco == null){
+            System.out.println("IdReceita não existe");
+        }
+
+        memoriaCache.setBloco(bloco, tag, indiceBloco);
+    }
+
     public void redefinirTagBloc(int enderecoBloco, MemoriaCache.tags tag){
 
     }
+
+    public void writeBack(int[] bloco, int indiceRam){
+
+    }
+
+    public MemoriaCache getMemoriaCache() {
+        return memoriaCache;
+    }
+
 }
 
