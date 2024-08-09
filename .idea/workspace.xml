@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e7b9a1a-f6df-4b86-b6d9-bb680174f985" name="Changes" comment="Commit 03" />
+    <list default="true" id="7e7b9a1a-f6df-4b86-b6d9-bb680174f985" name="Changes" comment="Commit 04">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mainController/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mainController/main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,21 +43,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Arthur/Desktop/FACULDADE/Arquitetura e Organização de Computadores II/Simulador-cache&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Arthur/Desktop/FACULDADE/Arquitetura e Organização de Computadores II/Simulador-cache",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -73,7 +78,9 @@
       <updated>1722796523095</updated>
       <workItem from="1722796524115" duration="17427000" />
       <workItem from="1722858899385" duration="8025000" />
-      <workItem from="1722906913799" duration="2515000" />
+      <workItem from="1722906913799" duration="6621000" />
+      <workItem from="1722956344416" duration="3626000" />
+      <workItem from="1723211917403" duration="5412000" />
     </task>
     <task id="LOCAL-00001" summary="Commit 02">
       <option name="closed" value="true" />
@@ -91,7 +98,39 @@
       <option name="project" value="LOCAL" />
       <updated>1722910195562</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Commit 03">
+      <option name="closed" value="true" />
+      <created>1722910633647</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722910633647</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Commit 03">
+      <option name="closed" value="true" />
+      <created>1722910839603</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1722910839603</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Commit 03">
+      <option name="closed" value="true" />
+      <created>1722910918930</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1722910918930</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Commit 04">
+      <option name="closed" value="true" />
+      <created>1722914362408</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1722914362408</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -100,6 +139,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Commit 02" />
     <MESSAGE value="Commit 03" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit 03" />
+    <MESSAGE value="Commit 04" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit 04" />
   </component>
 </project>

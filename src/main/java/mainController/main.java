@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class main {
 
+
     public static void readHit(Processador p, int idReceita){
 
         int indiceBloco = p.confereDadoCache(idReceita);
@@ -37,48 +38,10 @@ public class main {
             p1.getMemoriaCache().printCache();
         }
         else if (enderecoBloco2 != null && enderecoBloco3 == null){
-            blocoCache blocoCachep2 = p2.getBlocoCache(enderecoBloco2);
-
-            if(blocoCachep2.getTag() == MemoriaCache.tags.Exclusivo){
-
-                blocoCachep2.setTag(MemoriaCache.tags.Compartilhado);
-                //Colocar bloco no processador1 por meio da funcao setBloco(bloco, bloco.tag).
-                p1.getMemoriaCache().setBloco(blocoCachep2.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep2.getIndiceRAM());
-                //Chamar funcao para printar resultado e logs.
-                System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
-                        "necessário um acesso à cache do processador 2 e a tag do bloco da cache é compartilhada.");
-                p1.getMemoriaCache().printCache();
-            }
-            else if(blocoCachep2.getTag() == MemoriaCache.tags.Modificado){
-                ram.updateBloco(blocoCachep2.getDados(), enderecoBloco2);
-                blocoCachep2.setTag(MemoriaCache.tags.Compartilhado);
-                p1.getMemoriaCache().setBloco(blocoCachep2.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep2.getIndiceRAM());
-                System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
-                        "necessário um acesso à cache do processador 2 e a tag do bloco da cache é compartilhada.");
-                p1.getMemoriaCache().printCache();
-            }
+            readMissOneCopy(ram, p1, p2, enderecoBloco2, 2);
         }
-        else if (enderecoBloco3 != null && enderecoBloco2 == null) {
-            blocoCache blocoCachep3 = p3.getBlocoCache(enderecoBloco3);
-
-            if (blocoCachep3.getTag() == MemoriaCache.tags.Exclusivo) {
-
-                blocoCachep3.setTag(MemoriaCache.tags.Compartilhado);
-                //Colocar bloco no processador1 por meio da funcao setBloco(bloco, bloco.tag).
-                p1.getMemoriaCache().setBloco(blocoCachep3.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep3.getIndiceRAM());
-                //Chamar funcao para printar resultado e logs.
-                System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
-                        "necessário um acesso à cache do processador 2 e a tag do bloco da cache é compartilhada.");
-                p1.getMemoriaCache().printCache();
-            }
-            else if (blocoCachep3.getTag() == MemoriaCache.tags.Modificado) {
-                ram.updateBloco(blocoCachep3.getDados(), enderecoBloco3);
-                blocoCachep3.setTag(MemoriaCache.tags.Compartilhado);
-                p1.getMemoriaCache().setBloco(blocoCachep3.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep3.getIndiceRAM());
-                System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
-                        "necessário um acesso à cache do processador 2 e a tag do bloco da cache é compartilhada.");
-                p1.getMemoriaCache().printCache();
-            }
+        else if (enderecoBloco2 == null) {
+            readMissOneCopy(ram, p1, p3, enderecoBloco3, 3);
         }
 //        else{
 //            blocoCache blocoCachep2 = p2.getBlocoCache(enderecoBloco2);
@@ -95,12 +58,72 @@ public class main {
 //        }
     }
 
+    private static void readMissOneCopy(RAM ram, Processador p1, Processador p3, Integer enderecoBloco3, Integer processdaorUsado) {
+        blocoCache blocoCachep3 = p3.getBlocoCache(enderecoBloco3);
+
+        if (blocoCachep3.getTag() == MemoriaCache.tags.Exclusivo) {
+
+            blocoCachep3.setTag(MemoriaCache.tags.Compartilhado);
+            //Colocar bloco no processador1 por meio da funcao setBloco(bloco, bloco.tag).
+            p1.getMemoriaCache().setBloco(blocoCachep3.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep3.getIndiceRAM());
+            //Chamar funcao para printar resultado e logs.
+            System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
+                    "necessário um acesso à cache do processador "+ processdaorUsado +" e a tag do bloco da cache é compartilhada.");
+            p1.getMemoriaCache().printCache();
+        }
+        else if (blocoCachep3.getTag() == MemoriaCache.tags.Modificado) {
+            ram.updateBloco(blocoCachep3.getDados(), enderecoBloco3);
+            blocoCachep3.setTag(MemoriaCache.tags.Compartilhado);
+            p1.getMemoriaCache().setBloco(blocoCachep3.getDados(), MemoriaCache.tags.Compartilhado, blocoCachep3.getIndiceRAM());
+            System.out.println("A leitura foi um readMiss e o dado estava em uma das outras caches, então foi " +
+                    "necessário um acesso à cache do processador "+ processdaorUsado +" e a tag do bloco da cache é compartilhada.");
+            p1.getMemoriaCache().printCache();
+        }
+    }
+
     public void writeMiss(){
 
     }
 
-    public void writeHit(){
+    public static void writeHit(int idReceitaAlterado, int idReceita, int enderecoBloco1 , RAM ram, Processador p1, Processador p2, Processador p3){
+        blocoCache blocoCachep1 = p1.getMemoriaCache().getBlocoCache(enderecoBloco1);
 
+        if(blocoCachep1.getTag() == MemoriaCache.tags.Modificado){
+            blocoCachep1.getDados()[p1.buscaReceitaNoBloco(blocoCachep1, idReceita)] = idReceitaAlterado;
+            p1.setBlocoCache(blocoCachep1.getDados(), MemoriaCache.tags.Modificado, enderecoBloco1);
+            System.out.println("A escrita foi um writeHit e o bloco da cache estava com a tag modificado, " +
+                    "portanto mantém a mesma tag");
+            p1.getMemoriaCache().printCache();
+        }
+        else if(blocoCachep1.getTag() == MemoriaCache.tags.Compartilhado){
+            Integer enderecoBloco2 = p2.confereDadoCache(idReceita);
+            Integer enderecoBloco3 = p3.confereDadoCache(idReceita);
+
+            blocoCache blocoCachep2 = p2.getMemoriaCache().getBlocoCache(enderecoBloco1);
+            blocoCache blocoCachep3 = p3.getMemoriaCache().getBlocoCache(enderecoBloco1);
+
+            if (enderecoBloco2 != null && enderecoBloco3 != null){
+                blocoCachep1.getDados()[p1.buscaReceitaNoBloco(blocoCachep1, idReceita)] = idReceitaAlterado;
+                p1.setBlocoCache(blocoCachep1.getDados(), MemoriaCache.tags.Modificado, enderecoBloco1);
+                p2.setBlocoCache(blocoCachep2.getDados(), MemoriaCache.tags.Invalido, enderecoBloco2);
+                p3.setBlocoCache(blocoCachep3.getDados(), MemoriaCache.tags.Invalido, enderecoBloco3);
+            }
+            else if (enderecoBloco2 == null) {
+                blocoCachep1.getDados()[p1.buscaReceitaNoBloco(blocoCachep1, idReceita)] = idReceitaAlterado;
+                p1.setBlocoCache(blocoCachep1.getDados(), MemoriaCache.tags.Modificado, enderecoBloco1);
+                p3.setBlocoCache(blocoCachep3.getDados(), MemoriaCache.tags.Invalido, enderecoBloco3);
+
+            }
+            else if (enderecoBloco3 == null) {
+                blocoCachep1.getDados()[p1.buscaReceitaNoBloco(blocoCachep1, idReceita)] = idReceitaAlterado;
+                p1.setBlocoCache(blocoCachep1.getDados(), MemoriaCache.tags.Modificado, enderecoBloco1);
+                p2.setBlocoCache(blocoCachep3.getDados(), MemoriaCache.tags.Invalido, enderecoBloco2);
+            }
+        }
+        else if(blocoCachep1.getTag() == MemoriaCache.tags.Exclusivo){
+            blocoCachep1.getDados()[p1.buscaReceitaNoBloco(blocoCachep1, idReceita)] = idReceitaAlterado;
+            p1.setBlocoCache(blocoCachep1.getDados(), MemoriaCache.tags.Modificado, enderecoBloco1);
+        }
     }
 
     public static void main(String[] args) {
@@ -124,6 +147,7 @@ public class main {
         Processador processador2 = new Processador(5);
         Processador processador3 = new Processador(5);
 
+
         System.out.println("Escolha um processador: (1/2/3)");
         int processadorEscolhido = ler.nextInt();
         System.out.println("Deseja fazer uma leitura ou escrita? (l/e)");
@@ -138,24 +162,32 @@ public class main {
             processador2.getMemoriaCache().setBloco(bloco2, tag, i);
         }
         int[] bloco = {1,2,3,4,5};
-        processador2.getMemoriaCache().setBloco(bloco, MemoriaCache.tags.Modificado, 0);
+        processador1.getMemoriaCache().setBloco(bloco, MemoriaCache.tags.Modificado, 0);
 
 
         switch (processadorEscolhido){
             case 1:
+                Integer enderecoBloco = processador1.confereDadoCache(idReceita);
                 if(modoEscolhido.equals("l")){
-                    if(processador1.confereDadoCache(idReceita) != null){
+                    if(enderecoBloco != null){
                         readHit(processador1, idReceita);
                     }
                     readMiss(ram, processador1, processador2, processador3, idReceita);
                 }
+                else {
+                    System.out.println("O que deseja escrever/alterar? ");
+                    int dado = Integer.parseInt(ler.next());
+                    if(enderecoBloco != null){
+                        writeHit(dado, idReceita, enderecoBloco, ram, processador1, processador2, processador3);
+                    }
+                }
         }
 
-        //processador1.getMemoriaCache().printCache();
-        processador2.getMemoriaCache().printCache();
-        //processador3.getMemoriaCache().printCache();
+//        processador1.getMemoriaCache().printCache();
+//        processador2.getMemoriaCache().printCache();
+//        processador3.getMemoriaCache().printCache();
 
-        ram.printMemoria();
+//        ram.printMemoria();
 
 
 
