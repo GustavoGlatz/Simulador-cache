@@ -42,24 +42,12 @@ public class Processador {
         return 0;
     }
 
-//    public void setBlocoCache( bloco, MemoriaCache.tags tag, int indiceRAM){
-
-//    }
-
     public void setBlocoCache(int[] bloco, MemoriaCache.tags tag, int indiceBloco){
         if(bloco == null){
             System.out.println("IdReceita não existe");
         }
 
         memoriaCache.setBloco(bloco, tag, indiceBloco);
-    }
-
-    public void redefinirTagBloc(int enderecoBloco, MemoriaCache.tags tag){
-
-    }
-
-    public void writeBack(int[] bloco, int indiceRam){
-
     }
 
     public MemoriaCache getMemoriaCache() {

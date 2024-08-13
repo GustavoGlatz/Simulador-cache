@@ -69,7 +69,7 @@ public class MemoriaCache {
             if (!posicoesVazias.isEmpty()) {
                 int posicaoAleatoria = posicoesVazias.get(random.nextInt(posicoesVazias.size()));
                 filaEndereco.add(posicaoAleatoria);
-                cache.put(posicaoAleatoria, new blocoCache(bloco, tags.Exclusivo, indiceRAM));
+                cache.put(posicaoAleatoria, new blocoCache(bloco, tag, indiceRAM));
             }
         }
         //Substituição FIFO
@@ -82,7 +82,7 @@ public class MemoriaCache {
     }
 
     public void printCache() {
-        System.out.println("Conteúdo da Cache:");
+        System.out.println("\nConteúdo da Cache:");
         for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
             System.out.println("Posição: " + entry.getKey() + ", Dados: " + Arrays.toString(entry.getValue().dados) +
                     ", TAG: (" + entry.getValue().tag + "," + entry.getValue().indiceRAM + ")");
@@ -105,6 +105,10 @@ public class MemoriaCache {
         blocoCache bloco = cache.get(posicao);
         System.out.println("Posição: " + posicao + ", Dados: " + Arrays.toString(bloco.dados) +
                 ", TAG: (" + bloco.tag + "," + bloco.indiceRAM + ")");
+    }
+
+    public void atualizaBloco(blocoCache bloco, Integer enderecoBloco) {
+        cache.replace(enderecoBloco, bloco);
     }
 
 }

@@ -10,6 +10,8 @@ public class RAM {
         ram = new HashMap<>();
     }
 
+    public Integer getLinha(int dado){ return ram.get(dado); }
+
     public void setLinha(int indice, int dado) {
         ram.put(indice, dado);
     }
