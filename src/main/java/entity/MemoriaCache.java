@@ -82,23 +82,10 @@ public class MemoriaCache {
     }
 
     public void printCache() {
-        System.out.println("\nConteúdo da Cache:");
         for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
             System.out.println("Posição: " + entry.getKey() + ", Dados: " + Arrays.toString(entry.getValue().dados) +
                     ", TAG: (" + entry.getValue().tag + "," + entry.getValue().indiceRAM + ")");
         }
-    }
-
-    public Integer procuraCache(int idReceita) {
-        for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
-            int[] dados = entry.getValue().dados;
-            for (int dado : dados) {
-                if (dado == idReceita) {
-                    return entry.getKey();
-                }
-            }
-        }
-        return null;
     }
 
     public void printPosicaoCache(int posicao) {

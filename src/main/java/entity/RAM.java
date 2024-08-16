@@ -32,8 +32,7 @@ public class RAM {
         return (indiceEncontrado / TAMANHO_DO_BLOCO) * TAMANHO_DO_BLOCO;
     }
 
-    public int[] getBloco(int dado){
-        int inicioBloco = getIndiceBloco(dado);
+    public int[] getBloco(int inicioBloco){
         if(inicioBloco == -1){
             return null;
         }
