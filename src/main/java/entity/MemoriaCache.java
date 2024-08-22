@@ -46,9 +46,6 @@ public class MemoriaCache {
             this.tag = tag;
         }
 
-        public void setIndiceRAM(int indiceRAM) {
-            this.indiceRAM = indiceRAM;
-        }
     }
 
     public MemoriaCache(int tamanhoCache){

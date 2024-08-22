@@ -11,11 +11,6 @@ public class Processador {
         this.memoriaCache = new MemoriaCache(tamanhoCache);
     }
 
-    // Dados da memória RAM sem tag
-    public int[] acessarRam(RAM ram){
-        return null;
-    }
-
     // Busca na memória cache e retorna o endereco da linha da cache que contém o bloco da receita
     public Integer confereDadoCache(int idReceita){
         for (Map.Entry<Integer, MemoriaCache.blocoCache> entry : memoriaCache.cache.entrySet()) {
