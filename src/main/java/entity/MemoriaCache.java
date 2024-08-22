@@ -19,8 +19,8 @@ public class MemoriaCache {
 
     public static class blocoCache{
         private int[] dados;
-        private tags tag;
-        private int indiceRAM;
+        public tags tag;
+        public int indiceRAM;
 
         blocoCache(int[] dados, tags tag,  int indiceRAM){
             this.dados = dados;
@@ -79,6 +79,27 @@ public class MemoriaCache {
             filaEndereco.add(enderecoAntigo);
             cache.put(enderecoAntigo, new blocoCache(bloco, tag, indiceRAM));
         }
+    }
+
+    public blocoCache getBlocoInicioFila() {
+        Integer enderecoInicioFila = filaEndereco.peek();
+        if (enderecoInicioFila != null) {
+            return cache.get(enderecoInicioFila); // Retorna o bloco correspondente
+        }
+        return null; // Caso a fila esteja vazia, retorna null
+    }
+
+    public blocoCache[] getTodosBlocos() {
+        if(cache.isEmpty()) {
+            return null;
+        }
+
+        blocoCache[] todosBlocos = new blocoCache[cache.size()];
+        int index = 0;
+        for (Map.Entry<Integer, blocoCache> entry : cache.entrySet()) {
+            todosBlocos[index++] = entry.getValue();
+        }
+        return todosBlocos;
     }
 
     public void printCache() {

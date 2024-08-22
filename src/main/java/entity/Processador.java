@@ -44,7 +44,7 @@ public class Processador {
 
     public void setBlocoCache(int[] bloco, MemoriaCache.tags tag, int indiceBloco){
         if(bloco == null){
-            System.out.println("IdReceita não existe");
+            System.out.println("Dado não existe na ram");
         }
 
         memoriaCache.setBloco(bloco, tag, indiceBloco);

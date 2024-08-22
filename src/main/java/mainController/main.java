@@ -9,12 +9,52 @@ import java.util.Scanner;
 
 public class main {
 
+    // Analisa se o indice RAM do bloco solicitado existe em outra cache, caso exista e esteja modificado: writeBack e torna invalido
+    public static void analisaWriteback(RAM ram, int idReceita, blocoCache[] blocoCaches) {
+        int inicioBlocoRam = ram.getIndiceBloco(idReceita);
+        for (int i = 0; i < blocoCaches.length; i++) {
+            if(blocoCaches[i].getTag() == MemoriaCache.tags.Modificado && blocoCaches[i].getIndiceRAM() == inicioBlocoRam){
+                ram.updateBloco(blocoCaches[i].getDados(), blocoCaches[i].getIndiceRAM());
+                blocoCaches[i].setTag(MemoriaCache.tags.Invalido);
+                System.out.println("\nO dado procurado foi modificado em outra cache, então foi realizado o write back " +
+                        "e a tag deste bloco foi modificado para inválido");
+                ram.printMemoria();
+            }
+        }
+    }
 
     //Coloca um bloco da ram num bloco da cache a partir de um dado da ram
-    private static void colocaRamCacheComRam(RAM ram, Processador p1, int idReceita) {
+    private static boolean colocaRamCacheComRam(RAM ram, Processador p1, int idReceita) {
         int inicioBlocoRAM = ram.getIndiceBloco(idReceita);
         int[] blocoRAM = ram.getBloco(inicioBlocoRAM);
+
+        blocoCache blocoASerRetirado = p1.getMemoriaCache().getBlocoInicioFila();
+        blocoCache[] todosBlocos = p1.getMemoriaCache().getTodosBlocos();
+        if(todosBlocos != null) {
+            for(int i = 0; i < todosBlocos.length; i++) {
+                if(todosBlocos[i].equals(blocoASerRetirado) && blocoASerRetirado.getTag() == MemoriaCache.tags.Modificado && todosBlocos.length == 5){
+                    ram.updateBloco(blocoASerRetirado.getDados(), blocoASerRetirado.indiceRAM);
+                    p1.setBlocoCache(blocoRAM, MemoriaCache.tags.Exclusivo, inicioBlocoRAM);
+                    System.out.println("\nA tag do bloco retirado da cache era modificado, então houve a necessidade de realizar o writeBack do bloco retirado");
+                    ram.printMemoria();
+                    return true;
+                }
+                else if(todosBlocos[i].getIndiceRAM() == inicioBlocoRAM) {
+                    System.out.println("\nO bloco que continha o dado " + idReceita + " ja está inserido na cache com indice da RAM igual a " + inicioBlocoRAM +
+                            " porém este dado foi modificado");
+                    return false;
+                }
+            }
+        }
+        else if(todosBlocos == null){
+            p1.setBlocoCache(blocoRAM, MemoriaCache.tags.Exclusivo, inicioBlocoRAM);
+            if(blocoRAM == null){
+                return false;
+            }
+            return true;
+        }
         p1.setBlocoCache(blocoRAM, MemoriaCache.tags.Exclusivo, inicioBlocoRAM);
+        return true;
     }
 
     //Coloca um bloco da ram num bloco da cache a partir de um bloco da cache
@@ -33,10 +73,15 @@ public class main {
     }
 
     //Edita a cache no bloco do dado a ser modificado com o dado a ser escrito
-    private static void editaCacheMiss(Processador p1, int idReceita, int idReceitaAlterado) {
+    private static boolean editaCacheMiss(Processador p1, int idReceita, int idReceitaAlterado) {
         Integer enderecoBloco1 = p1.confereDadoCache(idReceita);
-        blocoCache blocoCachep1 = p1.getMemoriaCache().getBlocoCache(enderecoBloco1);
-        editaCacheHit(idReceitaAlterado, idReceita, enderecoBloco1, p1, blocoCachep1);
+        if(enderecoBloco1 != null){
+            blocoCache blocoCachep1 = p1.getMemoriaCache().getBlocoCache(enderecoBloco1);
+            editaCacheHit(idReceitaAlterado, idReceita, enderecoBloco1, p1, blocoCachep1);
+            return true;
+        }
+        p1.getMemoriaCache().printCache();
+        return false;
     }
 
     private static void atualizaBlocoCache(Processador p1, blocoCache blocoCache1, Integer enderecoBloco1, blocoCache blocoCachep3) {
@@ -152,18 +197,29 @@ public class main {
         Integer enderecoBloco2 = p2.confereDadoCache(idReceita);
         Integer enderecoBloco3 = p3.confereDadoCache(idReceita);
 
-        if(enderecoBloco2 == null && enderecoBloco3 == null){
-            colocaRamCacheComRam(ram, p1, idReceita);
+        blocoCache[] todosBlocosCache2 = p2.getMemoriaCache().getTodosBlocos();
+        if (todosBlocosCache2 != null) {
+            analisaWriteback(ram, idReceita, todosBlocosCache2);
+        }
+        blocoCache[] todosBlocosCache3 = p3.getMemoriaCache().getTodosBlocos();
+        if (todosBlocosCache3 != null) {
+            analisaWriteback(ram, idReceita, todosBlocosCache3);
+        }
 
-            System.out.println("\nA leitura foi um readMiss e não estava em nenhuma das outras caches, então foi " +
-                    "necessário um acesso a memoria principal e a tag do bloco da cache do processador escolhido é exclusiva.");
+        if(enderecoBloco2 == null && enderecoBloco3 == null){
+            boolean aux = colocaRamCacheComRam(ram, p1, idReceita);
+
+            if (aux) {
+                System.out.println("\nA leitura foi um readMiss e não estava em nenhuma das outras caches, então foi " +
+                        "necessário um acesso a memoria principal e a tag do bloco da cache do processador escolhido é exclusiva.");
+            }
             System.out.println("\nMemória cache acessada: ");
             p1.getMemoriaCache().printCache();
         }
         else if (enderecoBloco2 != null && enderecoBloco3 == null){
             readMissOneCopy(ram, p1, p2, enderecoBloco2);
         }
-        else if (enderecoBloco2 == null) {
+        else if (enderecoBloco2 == null && enderecoBloco3 != null) {
             readMissOneCopy(ram, p1, p3, enderecoBloco3);
         }
         else{
@@ -234,6 +290,13 @@ public class main {
             p3.getMemoriaCache().printCache();
             System.out.println("\nMemória RAM: ");
             ram.printMemoria();
+        }
+        else if(blocoCachep3.getTag() == MemoriaCache.tags.Invalido) {
+            p1.getMemoriaCache().setBloco(blocoCachep3.getDados(), MemoriaCache.tags.Exclusivo, blocoCachep3.getIndiceRAM());
+
+            System.out.println("\nA leitura foi um readMiss, o dado estava em uma das outras caches e a tag era invalido, então " +
+                    "a memória RAM foi requistada e a tag é exclusivo");
+            p1.getMemoriaCache().printCache();
         }
     }
 
@@ -375,14 +438,28 @@ public class main {
         Integer enderecoBloco2 = p2.confereDadoCache(idReceita);
         Integer enderecoBloco3 = p3.confereDadoCache(idReceita);
 
-        if(enderecoBloco2 == null && enderecoBloco3 == null){
-            colocaRamCacheComRam(ram, p1, idReceita);
-            editaCacheMiss(p1, idReceita, idReceitaAlterado);
+        blocoCache[] todosBlocosCache2 = p2.getMemoriaCache().getTodosBlocos();
+        if (todosBlocosCache2 != null) {
+            analisaWriteback(ram, idReceita, todosBlocosCache2);
+        }
+        blocoCache[] todosBlocosCache3 = p3.getMemoriaCache().getTodosBlocos();
+        if (todosBlocosCache3 != null) {
+            analisaWriteback(ram, idReceita, todosBlocosCache3);
+        }
 
-            System.out.println("\nA escrita foi um writeMiss e o bloco da cache não estava em nenhuma outra cache, " +
-                    "então foi necessário um acesso à memoria ram e a tag do bloco da cache do processador escolhido é modificado");
-            System.out.println("\nMemória cache acessada: ");
-            p1.getMemoriaCache().printCache();
+        if(enderecoBloco2 == null && enderecoBloco3 == null){
+            boolean aux2 = colocaRamCacheComRam(ram, p1, idReceita);
+            boolean aux = false;
+            if (aux2) {
+                aux = editaCacheMiss(p1, idReceita, idReceitaAlterado);
+            }
+
+            if (aux) {
+                System.out.println("\nA escrita foi um writeMiss e o bloco da cache não estava em nenhuma outra cache, " +
+                        "então foi necessário um acesso à memoria ram e a tag do bloco da cache do processador escolhido é modificado");
+                System.out.println("\nMemória cache acessada: ");
+                p1.getMemoriaCache().printCache();
+            }
         }
         else if(enderecoBloco3 == null && enderecoBloco2 != null){
             writeMissOneCopy(ram, p1, p2, idReceita, idReceitaAlterado, enderecoBloco2);
@@ -425,11 +502,15 @@ public class main {
             System.out.println("\nMemória cache requisitada: ");
             p2.getMemoriaCache().printCache();
         }
+        else if(blocoCache.getTag() == MemoriaCache.tags.Invalido){
+            p1.getMemoriaCache().setBloco(blocoCache.getDados(), MemoriaCache.tags.Exclusivo, blocoCache.getIndiceRAM());
+
+            System.out.println("\nA escrita foi um writeMiss, o dado estava em uma das outras caches e a tag era invalido, então " +
+                    "a memória RAM foi requistada e a tag é exclusivo");
+            p1.getMemoriaCache().printCache();
+        }
     }
 
-
-    /* Ainda falta colocar o caso de writeMiss e WriteMissInvalido quando as outras duas caches tem o dado(Modificado, Exclusivo e Compartilhado)
-       Acrescentar o caso de modificado para ReadMiss, ReadMissInvalido, WriteMiss e WriteMissInvalido quando o dado esta presente nas outras duas caches  */
     public static void main(String[] args) {
 
         RAM ram = new RAM();
@@ -444,22 +525,6 @@ public class main {
         }
         System.out.println("\nConteudo memória RAM:");
         ram.printMemoria();
-
-        //TESTE
-//        for (int i = 0; i < 7; i++) {
-//            int[] bloco1 = {i * 10, i * 10 + 1, i * 10 + 2, i * 10 + 3, i * 10 + 4};
-//            int[] bloco2 = {i * 3, i * 3 + 1, i * 3 + 2, i * 3 + 3, i * 3 + 4};
-//            int[] bloco3 = {i * 7, i * 7 + 1, i * 7 + 2, i * 7 + 3, i * 7 + 4};
-//            processador1.getMemoriaCache().setBloco(bloco1, MemoriaCache.tags.Exclusivo, i);
-//            processador2.getMemoriaCache().setBloco(bloco2, MemoriaCache.tags.Exclusivo, i);
-//            processador3.getMemoriaCache().setBloco(bloco3, MemoriaCache.tags.Exclusivo, i);
-//        }
-//        int[] bloco = {1,2,66,88,5};
-//        processador1.getMemoriaCache().setBloco(bloco, MemoriaCache.tags.Invalido, 0);
-//        int[] bloco2 = {1,2,66,88,5};
-//        processador2.getMemoriaCache().setBloco(bloco2, MemoriaCache.tags.Modificado, 0);
-//        int[] bloco3 = {0,2,66,4,5};
-//        processador3.getMemoriaCache().setBloco(bloco3, MemoriaCache.tags.Compartilhado, 0);
 
         System.out.println("\nMemoria cache p1: ");
         processador1.getMemoriaCache().printCache();
@@ -582,23 +647,15 @@ public class main {
                     System.out.println("O número inserido é inválido! Digite um número entre 1 e 3");
             }
 
-//            processador1.getMemoriaCache().printCache();
-//            processador2.getMemoriaCache().printCache();
-//            processador3.getMemoriaCache().printCache();
-//
-//            ram.printMemoria();
+            processador1.getMemoriaCache().printCache();
+            processador2.getMemoriaCache().printCache();
+            processador3.getMemoriaCache().printCache();
+
+            ram.printMemoria();
 
             System.out.println("\nDeseja continuar? (sim:1/não:-1)");
             i = ler.nextInt();
             System.out.println("\n");
         }
-
-
-//        processador1.getMemoriaCache().printCache();
-//        processador2.getMemoriaCache().printCache();
-//        processador3.getMemoriaCache().printCache();
-
-//        ram.printMemoria();
-
     }
 }
